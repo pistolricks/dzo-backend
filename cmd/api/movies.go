@@ -6,7 +6,6 @@ import (
 	"github.com/ollivr/greenlight/internal/data"
 	"github.com/ollivr/greenlight/internal/validator"
 	"net/http"
-	"time"
 )
 
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
@@ -64,8 +63,8 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 	movie, err := app.models.Movies.Get(id)
 	if err != nil {
 		switch {
-		case errors.Is(err, data.ErrRecordNotFound);
-		app.notFoundResponse(w, r)
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
 		default:
 			app.serverErrorResponse(w, r, err)
 		}
