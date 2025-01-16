@@ -3,19 +3,22 @@ package main
 import (
 	"context"
 	"database/sql"
+	"expvar"
 	"flag"
 	_ "github.com/lib/pq"
 	"github.com/ollivr/greenlight/internal/data"
 	"github.com/ollivr/greenlight/internal/mailer"
 	"log/slog"
 	"os"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
 )
 
 /* source $HOME/.profile */
-
+/* BODY='{"email": "carol@example.com", "password": "pa55word"}' */
+/* hey -d "$BODY" -m "POST" http://localhost:4000/v1/tokens/authentication */
 const version = "1.0.0"
 
 type config struct {
@@ -93,6 +96,22 @@ func main() {
 	defer db.Close()
 
 	logger.Info("database connection pool established")
+
+	expvar.NewString("version").Set(version)
+
+	expvar.Publish("goroutines", expvar.Func(func() any {
+		return runtime.NumGoroutine()
+	}))
+
+	// Publish the database connection pool statistics.
+	expvar.Publish("database", expvar.Func(func() any {
+		return db.Stats()
+	}))
+
+	// Publish the current Unix timestamp.
+	expvar.Publish("timestamp", expvar.Func(func() any {
+		return time.Now().Unix()
+	}))
 
 	app := &application{
 		config: cfg,
