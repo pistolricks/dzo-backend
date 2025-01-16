@@ -118,10 +118,9 @@ func (m MovieModel) Update(movie *Movie) error {
 		default:
 			return err
 		}
-		return nil
-	}
 
-	return m.DB.QueryRow(query, args...).Scan(&movie.Version)
+	}
+	return nil
 }
 
 func (m MovieModel) Delete(id int64) error {
