@@ -103,7 +103,7 @@ func (m UserModel) Insert(user *User) error {
 	return nil
 }
 
-func (m UserModel) GetByEmai(email string) (*User, error) {
+func (m UserModel) GetByEmail(email string) (*User, error) {
 	query := `
 	SELECT id, created_at, name, email, password_hash, activated, version
 FROM users
