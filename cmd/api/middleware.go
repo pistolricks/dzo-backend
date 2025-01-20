@@ -163,7 +163,7 @@ func (app *application) requirePermission(code string, next http.HandlerFunc) ht
 
 	}
 
-	return app.requireAuthenticatedUser(fn)
+	return app.requireActivatedUser(fn)
 }
 
 func (app *application) enableCORS(next http.Handler) http.Handler {
