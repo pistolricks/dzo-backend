@@ -155,6 +155,14 @@ func (app *application) requirePermission(code string, next http.HandlerFunc) ht
 			app.notPermittedResponse(w, r)
 			return
 		}
+
+		/* Test Prequire Permission - This was to check to see if context was working and attaching the user to the permission*/
+		
+		// err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
+		// if err != nil {
+		// 	app.serverErrorResponse(w, r, err)
+		// }
+
 		next.ServeHTTP(w, r)
 
 	}
