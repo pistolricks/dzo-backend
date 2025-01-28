@@ -23,6 +23,15 @@ confirm:
 run/api:
 	go run ./cmd/api -db-dsn=${GO_TEMPLATE_API_DB_DSN}
 
+
+
+## run/api/smtp: run the cmd/api application
+.PHONY: run/api/mail
+run/api/mail:
+	go run ./cmd/api -db-dsn=${GO_TEMPLATE_API_DB_DSN} -smtp-username=${MAIL_TEST_USERNAME} -smtp-password=${MAIL_TEST_PASSWORD}
+
+
+
 ## run/api: run the cmd/api application
 .PHONY: run/api/cors
 run/api/cors:
