@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+var (
+	ErrDuplicateUsername = errors.New("duplicate username")
+)
+
 type UserProfile struct {
 	ID                 int64     `json:"id"`
 	CreatedAt          time.Time `json:"created_at"`
@@ -94,8 +98,8 @@ RETURNING username`
 	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&user.Username)
 	if err != nil {
 		switch {
-		case err.Error() == `pq: duplicate key value violates unique constraint "users_email_key"`:
-			return ErrDuplicateEmail
+		case err.Error() == `pq: duplicate key value violates unique constraint "users_username_key"`:
+			return ErrDuplicateUsername
 		case errors.Is(err, sql.ErrNoRows):
 			return ErrEditConflict
 		default:
