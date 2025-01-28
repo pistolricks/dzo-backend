@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"expvar"
 	"flag"
+	"fmt"
 	_ "github.com/lib/pq"
 	"github.com/pistolricks/go-template-api/internal/data"
 	"github.com/pistolricks/go-template-api/internal/mailer"
@@ -62,9 +63,6 @@ func main() {
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
 	flag.StringVar(&cfg.db.dsn, "db-dsn", "", "PostgreSQL DSN")
-	// flag.StringVar(&cfg.db.dsn, "db-dsn", "postgres://greenlight:pa55word@localhost/greenlight?sslmode=disable", "PostgreSQL DSN")
-
-	// flag.StringVar(&cfg.db.dsn, "db-dsn", os.Getenv("GO_TEMPLATE_API_DB_DSN"), "PostgreSQL DSN")
 
 	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "PostgreSQL max open connections")
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
@@ -78,13 +76,21 @@ func main() {
 	flag.IntVar(&cfg.smtp.port, "smtp-port", 25, "SMTP port")
 	flag.StringVar(&cfg.smtp.username, "smtp-username", "c151c470acd048", "SMTP username")
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "05edc7bc588a45", "SMTP password")
-	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "Greenlight <no-reply@greenlight.ollivr.com>", "SMTP sender")
+	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "TEAM <no-reply@team.ollivr.com>", "SMTP sender")
 
 	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
 		cfg.cors.trustedOrigins = strings.Fields(val)
 		return nil
 	})
+
+	displayVersion := flag.Bool("version", false, "Display version and exit")
+
 	flag.Parse()
+
+	if *displayVersion {
+		fmt.Printf("Version:\t%s\n", version)
+		os.Exit(0)
+	}
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
