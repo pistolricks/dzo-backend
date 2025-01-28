@@ -1,7 +1,7 @@
 package data
 
 import (
-	"github.com/ollivr/greenlight/internal/validator"
+	"github.com/pistolricks/go-template-api/internal/validator"
 	"strings"
 )
 

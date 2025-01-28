@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"github.com/ollivr/greenlight/internal/validator"
+	"github.com/pistolricks/go-template-api/internal/validator"
 	"io"
 	"net/http"
 	"net/url"

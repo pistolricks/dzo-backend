@@ -6,7 +6,7 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/base32"
-	"github.com/ollivr/greenlight/internal/validator"
+	"github.com/pistolricks/go-template-api/internal/validator"
 	"time"
 )
 

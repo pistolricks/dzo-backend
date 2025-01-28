@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
-	"github.com/ollivr/greenlight/internal/data"
-	"github.com/ollivr/greenlight/internal/validator"
+	"github.com/pistolricks/go-template-api/internal/data"
+	"github.com/pistolricks/go-template-api/internal/validator"
 	"net/http"
 	"time"
 )

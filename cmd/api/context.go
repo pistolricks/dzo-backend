@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/ollivr/greenlight/internal/data"
+	"github.com/pistolricks/go-template-api/internal/data"
 	"net/http"
 )
 

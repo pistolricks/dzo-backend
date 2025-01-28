@@ -6,8 +6,8 @@ import (
 	"expvar"
 	"flag"
 	_ "github.com/lib/pq"
-	"github.com/ollivr/greenlight/internal/data"
-	"github.com/ollivr/greenlight/internal/mailer"
+	"github.com/pistolricks/go-template-api/internal/data"
+	"github.com/pistolricks/go-template-api/internal/mailer"
 	"log/slog"
 	"os"
 	"runtime"
@@ -64,7 +64,7 @@ func main() {
 	flag.StringVar(&cfg.db.dsn, "db-dsn", "", "PostgreSQL DSN")
 	// flag.StringVar(&cfg.db.dsn, "db-dsn", "postgres://greenlight:pa55word@localhost/greenlight?sslmode=disable", "PostgreSQL DSN")
 
-	// flag.StringVar(&cfg.db.dsn, "db-dsn", os.Getenv("GREENLIGHT_DB_DSN"), "PostgreSQL DSN")
+	// flag.StringVar(&cfg.db.dsn, "db-dsn", os.Getenv("GO_TEMPLATE_API_DB_DSN"), "PostgreSQL DSN")
 
 	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "PostgreSQL max open connections")
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
