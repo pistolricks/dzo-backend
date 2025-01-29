@@ -215,3 +215,12 @@ func (app *application) updateUserPasswordHandler(w http.ResponseWriter, r *http
 		app.serverErrorResponse(w, r, err)
 	}
 }
+
+func (app *application) userLogoutHandler(w http.ResponseWriter, r *http.Request) {
+	r = app.contextSetUser(r, data.AnonymousUser)
+
+	err := app.writeJSON(w, http.StatusOK, envelope{"user": data.AnonymousUser}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}

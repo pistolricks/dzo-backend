@@ -3,13 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
+
 	"github.com/pistolricks/go-template-api/internal/data"
 	"github.com/pistolricks/go-template-api/internal/validator"
-	"net/http"
 )
 
 func (app *application) createVendorHandler(w http.ResponseWriter, r *http.Request) {
-
 	var input struct {
 		Title   string       `json:"title"`
 		Year    int32        `json:"year"`
@@ -40,6 +40,7 @@ func (app *application) createVendorHandler(w http.ResponseWriter, r *http.Reque
 	err = app.models.Vendors.Insert(vendor)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
+		return
 	}
 
 	headers := make(http.Header)
@@ -49,8 +50,6 @@ func (app *application) createVendorHandler(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
-
-	fmt.Fprintf(w, "%+v\n", input)
 }
 
 func (app *application) showVendorHandler(w http.ResponseWriter, r *http.Request) {
@@ -111,6 +110,7 @@ func (app *application) updateVendorHandler(w http.ResponseWriter, r *http.Reque
 	if input.Title != nil {
 		vendor.Title = *input.Title
 	}
+
 	if input.Year != nil {
 		vendor.Year = *input.Year
 	}
@@ -129,7 +129,6 @@ func (app *application) updateVendorHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	err = app.models.Vendors.Update(vendor)
-
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrEditConflict):
@@ -164,7 +163,7 @@ func (app *application) deleteVendorHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"message": "vendor deleted"}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "vendor successfully deleted"}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
@@ -188,7 +187,6 @@ func (app *application) listVendorsHandler(w http.ResponseWriter, r *http.Reques
 	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
 
 	input.Filters.Sort = app.readString(qs, "sort", "id")
-
 	input.Filters.SortSafelist = []string{"id", "title", "year", "runtime", "-id", "-title", "-year", "-runtime"}
 
 	if data.ValidateFilters(v, input.Filters); !v.Valid() {
