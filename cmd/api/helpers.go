@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -143,4 +145,18 @@ func (app *application) background(fn func()) {
 
 		fn()
 	}()
+}
+
+func HashID(id int64) string {
+	idString := strconv.FormatInt(id, 10)
+	hasher := sha256.New()
+
+	_, err := hasher.Write([]byte(idString))
+	if err != nil {
+		return fmt.Sprintf("error: %v", err)
+	}
+
+	hashedID := hex.EncodeToString(hasher.Sum(nil))
+
+	return hashedID
 }

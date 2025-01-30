@@ -170,7 +170,12 @@ func (m VendorModel) GetAll(title string, genres []string, filters Filters) ([]*
 	if err != nil {
 		return nil, Metadata{}, err
 	}
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+
+		}
+	}(rows)
 
 	totalRecords := 0
 	vendors := []*Vendor{}

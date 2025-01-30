@@ -3,8 +3,10 @@ package data
 import (
 	"database/sql"
 	"fmt"
+	"github.com/kolesa-team/go-webp/decoder"
 	"github.com/kolesa-team/go-webp/encoder"
 	"github.com/kolesa-team/go-webp/webp"
+	"github.com/pistolricks/go-template-api/internal/validator"
 	"image/jpeg"
 	"log"
 	"os"
@@ -12,14 +14,23 @@ import (
 )
 
 type Content struct {
-	ID        int64     `json:"id"`
+	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"-"`
 	Name      string    `json:"name"`
 	Src       string    `json:"src"`
 	Type      string    `json:"type"`
 	Size      float32   `json:"size"`
-	Order     int16     `json:"order"`
-	UserID    int64     `json:"-"`
+	Width     float32   `json:"width"`
+	Height    float32   `json:"height"`
+	SortOrder int16     `json:"sort_order"`
+	UserID    string    `json:"user_id"`
+}
+
+func ValidateContent(v *validator.Validator, content *Content) {
+	v.Check(content.Name != "", "name", "is required")
+	v.Check(content.Type != "", "type", "is required")
+	v.Check(content.Size > 0, "size", "This content doesn't have any data to it")
+	v.Check(content.SortOrder > 0, "order", "order must be greater than zero")
 }
 
 type ContentModel struct {
@@ -27,6 +38,7 @@ type ContentModel struct {
 }
 
 func (m ContentModel) EncodeWebP(content *Content) error {
+	fmt.Println("Made it to EncodeWebP")
 	file, err := os.Open(content.Src)
 	if err != nil {
 		log.Fatalln(err)
@@ -37,12 +49,12 @@ func (m ContentModel) EncodeWebP(content *Content) error {
 		log.Fatalln(err)
 	}
 
-	fileName := fmt.Sprintf("./storage/image-%d-%d.webp", content.ID, content.Order)
+	output, err := os.Create("storage/output_encode.webp")
 
-	output, err := os.Create(fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
+	//noinspection GoUnhandledErrorResult
 	defer output.Close()
 
 	options, err := encoder.NewLossyEncoderOptions(encoder.PresetDefault, 75)
@@ -53,8 +65,32 @@ func (m ContentModel) EncodeWebP(content *Content) error {
 	if err := webp.Encode(output, img, options); err != nil {
 		log.Fatalln(err)
 	}
+
+	return nil
+}
+
+func (m ContentModel) DecodeWebP(content *Content) error {
+
+	file, err := os.Open(content.Src)
 	if err != nil {
-		return err
+		log.Fatalln(err)
 	}
+
+	fileName := fmt.Sprintf("./storage/%d.jpg", content.ID)
+	output, err := os.Create(fileName)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	img, err := webp.Decode(file, &decoder.Options{})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if err = jpeg.Encode(output, img, &jpeg.Options{Quality: 75}); err != nil {
+		log.Fatalln(err)
+	}
+
 	return nil
 }
